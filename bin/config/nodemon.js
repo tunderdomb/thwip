@@ -1,8 +1,10 @@
 var path = require("path")
+var packageJson = require("./package")
 
 var nodemonSettings
 var nodemonConfigFile = "nodemon.json"
 var watch = [nodemonConfigFile]
+var nodeArgs = []
 
 module.exports = function(  ){
   try{
@@ -14,8 +16,9 @@ module.exports = function(  ){
       : null
   }
   catch( e ){
+    if( packageJson.main ) watch.push(packageJson.main)
     nodemonSettings = {
-      "script": "",
+      "script": packageJson.main||"",
       restartable: "rs",
       execMap: {
         "js": "node",
@@ -45,7 +48,7 @@ module.exports = function(  ){
         "NODE_ENV": process.env.NODE_ENV
       },
       "ext": "js json",
-      "nodeArgs": ["--debug"]
+      "nodeArgs": []
     }
   }
   return nodemonSettings

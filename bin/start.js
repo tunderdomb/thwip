@@ -1,5 +1,6 @@
 var path = require("path")
 var fs = require("fs")
+var argv = require("minimist")(process.argv.slice(2))
 var reserve = require("portreserver")
 var browserSync = require("browser-sync")
 var nodemon = require("nodemon")
@@ -20,6 +21,9 @@ fs.exists(config.CONFIG_FILE, function( exists ){
         log.warn("Invalid config export")
         return
       }
+      if( typeof configFile.process == "function" ){
+        configFile.process(options.process)
+      }
       if( typeof configFile == "function" ){
         if( configFile.length > 1 ){
           configFile(options, start)
@@ -32,9 +36,6 @@ fs.exists(config.CONFIG_FILE, function( exists ){
       else {
         log.warn("Config script should export a function")
       }
-      if( typeof configFile.process == "function" ){
-        configFile(options.process)
-      }
     }
     catch( e ){
       log.error("Error executing config: ")
@@ -42,7 +43,8 @@ fs.exists(config.CONFIG_FILE, function( exists ){
     }
   }
   else{
-    log.error("Config file not found: ", config.CONFIG_FILE)
+    //log.error("Config file not found: ", config.CONFIG_FILE)
+    start()
   }
 })
 
@@ -56,12 +58,12 @@ function start(){
     if( options.livereload ){
       startLiveReload(options, serverPort, liveReloadPort, function(  ){
         startNodeMon(options, serverPort)
-        options.process.start()
       })
     }
     else {
       startNodeMon(options, serverPort)
     }
+    options.process.start()
   })
 }
 
@@ -134,7 +136,7 @@ function startNodeMon( options, serverPort ){
   options.nodemon.env.PORT = serverPort
   return nodemon(options.nodemon).on("start", function(){
     if( !started ){
-      log.info("App has started")
+      log.info("App has started", log.color.magenta(options.nodemon.script))
       started = true
     }
   }).on("quit", function(){

@@ -1,0 +1,23 @@
+{
+  "name": "test",
+  "version": "0.0.0",
+  "description": "ERROR: No README data found!",
+  "main": "manifest.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "thwip": {
+    "options": {
+      "nodemon": {},
+      "livereload": {},
+      "ports": {}
+    },
+    "process": {
+      "less": [],
+      "stylus": [],
+      "browserify": []
+    }
+  }
+}

@@ -4,10 +4,13 @@ var log = require("../util/log")
 var config = require("./config")
 var argv = require("minimist")(process.argv.slice(2))
 var action = argv._[0]
-console.log("arg", argv, action)
+
 switch( action ){
   case "create":
     require("./create")
+    break
+  case "init":
+    require("./init")
     break
   default:
     runStart()
@@ -20,7 +23,9 @@ function runStart(  ){
   return nodemon({
     "script": startScript,
     restartable: "rs",
-    execMap: {"js": "node"},
+    execMap: {
+      "js": "node"
+    },
     ignore: [
       ".git",
       "node_modules/**/node_modules",
@@ -35,7 +40,8 @@ function runStart(  ){
     "env": {
       "NODE_ENV": process.env.NODE_ENV
     },
-    "ext": "js json"
+    "ext": "js json",
+    "nodeArgs": []
   }).on("start", function(){
     if( !started ){
       log("start")
